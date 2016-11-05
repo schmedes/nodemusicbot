@@ -25,6 +25,7 @@ client.on('ready', () => {
 client.on('message', message => {
   if(message.author === client.user) return;
   const shards = message.content.split(' ');
+  if(shards[0] === '!help') textChannel.sendMessage(help);
   if(shards[0] === '!music') musicHandler(shards);
   });
 
@@ -41,7 +42,7 @@ function musicHandler(musicMessage) {
       pauseStream();
       break;
     case 'next':
-      next();
+      nextSong();
       break;
     case 'add':
       if((/https:\/\/www\.youtube\.com\/watch\?v=\w+/.test(musicMessage[2]))) {
@@ -94,8 +95,12 @@ function nextSong() {
 }
 
 function addToQueue(link) {
+     try{
       const stream = ytdl(link, {filter : 'audioonly'});
       musicQueue.push(stream);
+     } catch(e) {
+       textChannel.sendMessage('Fick dich Gregory');
+     }
 }
  
 client.login(accessToken);
