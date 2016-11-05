@@ -40,6 +40,9 @@ function musicHandler(musicMessage) {
     case 'pause':
       pauseStream();
       break;
+    case 'next':
+      next();
+      break;
     case 'add':
       if((/https:\/\/www\.youtube\.com\/watch\?v=\w+/.test(musicMessage[2]))) {
         addToQueue(musicMessage[2]);
@@ -83,6 +86,11 @@ function pauseStream() {
   }
   pause = false;
   dispatcher.resume();
+}
+
+function nextSong() {
+  const connection = client.voiceConnections.first();
+  dispatcher.end();
 }
 
 function addToQueue(link) {
