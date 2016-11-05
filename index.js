@@ -33,6 +33,7 @@ function musicHandler(musicMessage) {
   switch(musicMessage[1]) {
     case 'start':
       running = true;
+      textChannel.sendMessage('Music Starting');
       play();
       break;
     case 'stop':
@@ -64,7 +65,6 @@ function play() {
    if(musicQueue.length === 0) {
      return;
    }
-   textChannel.sendMessage('Music Starting');
    const stream = musicQueue.shift();
    dispatcher = connection.playStream(stream, streamOpt);
    dispatcher.on('end', ()=>{
@@ -99,7 +99,7 @@ function addToQueue(link) {
       const stream = ytdl(link, {filter : 'audioonly'});
       musicQueue.push(stream);
      } catch(e) {
-       textChannel.sendMessage('Fick dich Gregory');
+       textChannel.sendMessage('Link not working');
      }
 }
  
