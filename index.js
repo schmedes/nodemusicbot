@@ -17,7 +17,6 @@ const help = `-- !help - Show Commands
 
 client.on('ready', () => {
   textChannel = client.channels.find('name', 'general');
-  client.channels.find('name', 'General').join();
   textChannel.sendMessage('Bot Running');
   textChannel.sendMessage(help);
 });
@@ -26,17 +25,21 @@ client.on('message', message => {
   if(message.author === client.user) return;
   const shards = message.content.split(' ');
   if(shards[0] === '!help') textChannel.sendMessage(help);
-  if(shards[0] === '!music') musicHandler(shards);
+  if(shards[0] === '!music') musicHandler(shards, message.author.client.voiceConnections.first().channel.name);
   });
 
-function musicHandler(musicMessage) {
+function musicHandler(musicMessage, channel) {
   switch(musicMessage[1]) {
     case 'start':
       running = true;
+      if(client.voiceConnections.length === 0) {
+        client.channels.find('name', channel).join();
+      }
       textChannel.sendMessage('Music Starting');
       play();
       break;
     case 'stop':
+      client.voiceConnections.first().disconnect();
       stop();
       break;
     case 'pause':
@@ -74,7 +77,6 @@ function play() {
 
 function stop() {
   running = false;
-  const connection = client.voiceConnections.first();
   dispatcher.end();
   textChannel.sendMessage('Music Stopped');
 }
@@ -90,7 +92,6 @@ function pauseStream() {
 }
 
 function nextSong() {
-  const connection = client.voiceConnections.first();
   dispatcher.end();
 }
 
