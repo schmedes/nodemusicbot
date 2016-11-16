@@ -39,7 +39,11 @@ function musicHandler(musicMessage, channel) {
       play();
       break;
     case 'stop':
-      client.voiceConnections.first().disconnect();
+      if(client.voiceConnections.length === 0) {
+        textChannel.sendMessage('Music is not running');
+      } else {
+        client.voiceConnections.first().disconnect();
+      }
       stop();
       break;
     case 'pause':
