@@ -25,18 +25,20 @@ client.on('message', message => {
   if(message.author === client.user) return;
   const shards = message.content.split(' ');
   if(shards[0] === '!help') textChannel.sendMessage(help);
-  if(shards[0] === '!music') musicHandler(shards, message.author.client.voiceConnections.first().channel.name);
+  if(shards[0] === '!music') musicHandler(shards, message.author.client.channels.find('type', 'voice').name);
   });
 
 function musicHandler(musicMessage, channel) {
   switch(musicMessage[1]) {
     case 'start':
       running = true;
-      if(client.voiceConnections.length === 0) {
-        client.channels.find('name', channel).join();
-      }
       textChannel.sendMessage('Music Starting');
+      if(client.voiceConnections.array().length === 0) {
+        client.channels.find('name', channel).join()
+        .then( _ => play());
+      } else {  
       play();
+      }
       break;
     case 'stop':
       stop();
@@ -62,7 +64,6 @@ function musicHandler(musicMessage, channel) {
 }
 
 function play() {
-
    const connection = client.voiceConnections.first();
    if(musicQueue.length === 0) {
      return;
